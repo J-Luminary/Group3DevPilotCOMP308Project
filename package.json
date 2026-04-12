@@ -1,0 +1,15 @@
+{
+  "name": "group3-devpilot",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd services/gateway && npm install && cd ../auth-service && npm install && cd ../projects-service && npm install && cd ../ai-review-service && npm install && cd ../../frontends/shell && npm install && cd ../projects-app && npm install && cd ../ai-review-app && npm install",
+    "start:services": "concurrently -n auth,projects,airev,gateway -c cyan,magenta,yellow,green \"cd services/auth-service && npm start\" \"cd services/projects-service && npm start\" \"cd services/ai-review-service && npm start\" \"wait-on tcp:4001 tcp:4002 tcp:4003 && cd services/gateway && npm start\"",
+    "start:frontends": "concurrently -n projects,airev,shell -c magenta,yellow,green \"cd frontends/projects-app && npm run dev\" \"cd frontends/ai-review-app && npm run dev\" \"cd frontends/shell && npm run dev\"",
+    "start": "concurrently -n back,front -c blue,cyan \"npm run start:services\" \"npm run start:frontends\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "wait-on": "^9.0.4"
+  }
+}

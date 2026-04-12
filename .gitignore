@@ -1,0 +1,61 @@
+# dependencies
+node_modules
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+
+# build output
+dist
+.__mf__temp
+.vite
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+
+# editor / IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# AI assistant configs
+.claude
+.claude-*
+.cursor
+.aider*
+.codeium
+.continue
+.github/copilot*
+
+# AI workflow docs
+CLAUDE.md
+AGENTS.md
+AI-Documentation
+ai-documentation
+ai-docs
+AI-Docs
+PROJECTPROGRESS.md
+PROJECTSTRUCTURE.md
+FEATURESPEC.md
+ARCHITECTURECONSISTENCY.md
+INDEX.md
+anthropic-*
+*.prompt
+prompts/
+
+# temp / misc
+unpacked
+tmp
+temp
+*.tmp
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db

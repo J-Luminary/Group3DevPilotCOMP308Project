@@ -1,0 +1,72 @@
+body {
+  background: whitesmoke;
+}
+
+.app-nav {
+  background: steelblue;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.app-nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.app-nav .spacer {
+  flex: 1;
+}
+
+.page {
+  max-width: 960px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.card-box {
+  background: white;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.severity-high { color: red; font-weight: 600; }
+.severity-medium { color: darkorange; font-weight: 600; }
+.severity-low { color: gray; }
+
+.citation {
+  background: lightyellow;
+  padding: 8px;
+  border-left: 3px solid goldenrod;
+  margin: 6px 0;
+  font-size: 0.9em;
+}
+
+.confidence-bar {
+  height: 8px;
+  background: lightgray;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.confidence-bar > div {
+  height: 100%;
+  background: seagreen;
+}
+
+.error-msg {
+  color: red;
+  margin-top: 8px;
+}
+
+.auth-box {
+  max-width: 420px;
+}
+
+.draft-content {
+  white-space: pre-wrap;
+}
