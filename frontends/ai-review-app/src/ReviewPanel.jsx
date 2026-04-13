@@ -1,6 +1,7 @@
 import React from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { Button, Spinner } from "react-bootstrap";
+import "./styles.css";
 
 const GET_DRAFT = gql`
   query Draft($projectId: ID!, $featureId: ID!, $draftId: ID!) {
@@ -39,40 +40,49 @@ function severityClass(sev) {
   return "severity-low";
 }
 
+function formatDate(value) {
+  if (!value) return "Unknown";
+  return new Date(Number(value) || value).toLocaleString();
+}
+
 function ReviewCard({ r }) {
   const pct = Math.round((r.confidence || 0) * 100);
+  const issues = r.issues || [];
+  const suggestions = r.suggestions || [];
+  const citations = r.citations || [];
   return (
-    <div className="card-box">
-      <div className="d-flex justify-content-between">
+    <article className="review-card">
+      <div className="review-row review-row-between">
         <strong>Summary</strong>
-        <small className="text-muted">{new Date(Number(r.createdAt) || r.createdAt).toLocaleString()}</small>
+        <small className="review-muted">{formatDate(r.createdAt)}</small>
       </div>
-      <p>{r.summary}</p>
+      <p className="review-summary">{r.summary}</p>
 
-      <div className="d-flex align-items-center gap-2 mb-2">
+      <div className="review-row review-confidence-row">
         <span className="small">Confidence: {pct}%</span>
-        <div className="confidence-bar flex-grow-1">
+        <div className="confidence-bar review-grow">
           <div style={{ width: `${pct}%` }} />
         </div>
       </div>
 
-      <h6>Issues</h6>
-      {r.issues.length === 0 && <p className="small text-muted">No issues flagged.</p>}
+      <h6 className="review-subtitle">Issues</h6>
+      {issues.length === 0 && <p className="small review-muted">No issues flagged.</p>}
       <ul>
-        {r.issues.map((i, idx) => (
+        {issues.map((i, idx) => (
           <li key={idx}>
             <span className={severityClass(i.severity)}>[{i.severity}]</span> <em>{i.type}</em> — {i.description}
           </li>
         ))}
       </ul>
 
-      <h6>Suggestions</h6>
+      <h6 className="review-subtitle">Suggestions</h6>
       <ul>
-        {r.suggestions.map((s, idx) => <li key={idx}>{s}</li>)}
+        {suggestions.length === 0 && <li className="review-muted">No suggestions available.</li>}
+        {suggestions.map((s, idx) => <li key={idx}>{s}</li>)}
       </ul>
 
-      <h6>Citations</h6>
-      {r.citations.map((c, idx) => (
+      <h6 className="review-subtitle">Citations</h6>
+      {citations.map((c, idx) => (
         <div key={idx} className="citation">
           <strong>{c.source}</strong>
           <div>{c.snippet}</div>
@@ -81,11 +91,11 @@ function ReviewCard({ r }) {
 
       {r.reflectionNotes && (
         <>
-          <h6 className="mt-2">Reflection audit</h6>
+          <h6 className="review-subtitle mt-2">Reflection audit</h6>
           <p className="small"><em>{r.reflectionNotes}</em></p>
         </>
       )}
-    </div>
+    </article>
   );
 }
 
@@ -97,10 +107,10 @@ export default function ReviewPanel({ projectId, featureId, draftId }) {
     refetchQueries: [{ query: REVIEWS_FOR_DRAFT, variables: { draftId } }]
   });
 
-  if (draftQ.loading) return <p>Loading draft...</p>;
+  if (draftQ.loading) return <div className="review-card review-loading">Loading draft...</div>;
   if (draftQ.error) return <p className="error-msg">{draftQ.error.message}</p>;
   const draft = draftQ.data?.draft;
-  if (!draft) return <p>Draft not found.</p>;
+  if (!draft) return <div className="review-card review-empty">Draft not found.</div>;
 
   function runReview() {
     generate({ variables: { draftId, draftContent: draft.content } });
@@ -109,20 +119,24 @@ export default function ReviewPanel({ projectId, featureId, draftId }) {
   const reviews = reviewsQ.data?.reviewsForDraft ?? [];
 
   return (
-    <div>
-      <h2>AI Review</h2>
-      <div className="card-box">
-        <div className="small text-muted">Draft v{draft.version}</div>
-        <pre style={{ whiteSpace: "pre-wrap" }}>{draft.content}</pre>
-        <Button onClick={runReview} disabled={genState.loading}>
-          {genState.loading ? <><Spinner size="sm" /> Running agentic RAG...</> : "Generate review"}
+    <section className="review-wrap">
+      <div className="review-page-head">
+        <h2>AI Review</h2>
+        <p>Analyze draft quality, issues, and suggestions with confidence scoring.</p>
+      </div>
+
+      <div className="review-card">
+        <div className="small review-muted">Draft v{draft.version}</div>
+        <pre className="review-draft-content">{draft.content}</pre>
+        <Button className="review-btn-primary" onClick={runReview} disabled={genState.loading}>
+          {genState.loading ? <><Spinner size="sm" /> Running AI analysis...</> : "Generate review"}
         </Button>
         {genState.error && <div className="error-msg">{genState.error.message}</div>}
       </div>
 
-      <h4>History</h4>
-      {reviews.length === 0 && <p>No reviews yet for this draft.</p>}
+      <h4 className="review-subtitle">Review History</h4>
+      {reviews.length === 0 && <p className="review-muted">No reviews yet for this draft.</p>}
       {reviews.map((r) => <ReviewCard key={r.id} r={r} />)}
-    </div>
+    </section>
   );
 }

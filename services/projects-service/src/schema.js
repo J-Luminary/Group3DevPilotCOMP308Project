@@ -31,11 +31,18 @@ export const typeDefs = gql`
     project(id: ID!): Project
     feature(projectId: ID!, featureId: ID!): Feature
     draft(projectId: ID!, featureId: ID!, draftId: ID!): Draft
+    draftsByFeature(projectId: ID!, featureId: ID!): [Draft!]!
   }
 
   extend type Mutation {
     createProject(name: String!, description: String): Project!
+    updateProject(projectId: ID!, name: String!, description: String): Project!
+    deleteProject(projectId: ID!): Boolean!
     addFeature(projectId: ID!, title: String!, description: String): Feature!
+    updateFeature(projectId: ID!, featureId: ID!, title: String!, description: String): Feature!
+    deleteFeature(projectId: ID!, featureId: ID!): Boolean!
     submitDraft(projectId: ID!, featureId: ID!, content: String!): Draft!
+    updateDraft(projectId: ID!, featureId: ID!, draftId: ID!, content: String!): Draft!
+    deleteDraft(projectId: ID!, featureId: ID!, draftId: ID!): Boolean!
   }
 `;

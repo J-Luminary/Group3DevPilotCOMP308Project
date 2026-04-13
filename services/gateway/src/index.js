@@ -8,6 +8,7 @@ import { expressMiddleware } from "@as-integrations/express5";
 import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from "@apollo/gateway";
 
 const PORT = 4000;
+const includeAiReview = process.env.ENABLE_AIREVIEW_SUBGRAPH !== "false";
 
 class SessionAwareDataSource extends RemoteGraphQLDataSource {
   willSendRequest({ request, context }) {
@@ -35,7 +36,7 @@ const gateway = new ApolloGateway({
     subgraphs: [
       { name: "auth", url: "http://localhost:4001/graphql" },
       { name: "projects", url: "http://localhost:4002/graphql" },
-      { name: "aireview", url: "http://localhost:4003/graphql" }
+      ...(includeAiReview ? [{ name: "aireview", url: "http://localhost:4003/graphql" }] : [])
     ]
   }),
   buildService: ({ url }) => new SessionAwareDataSource({ url })
@@ -56,4 +57,9 @@ app.use("/graphql", expressMiddleware(server, {
   context: async ({ req, res }) => ({ req, res })
 }));
 
-app.listen(PORT, () => console.log(`[gateway] running on http://localhost:${PORT}/graphql`));
+app.listen(PORT, () => {
+  console.log(`[gateway] running on http://localhost:${PORT}/graphql`);
+  if (!includeAiReview) {
+    console.log("[gateway] milestone mode: ai-review subgraph disabled");
+  }
+});

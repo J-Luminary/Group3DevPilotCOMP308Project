@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "install:all": "npm install && cd services/gateway && npm install && cd ../auth-service && npm install && cd ../projects-service && npm install && cd ../ai-review-service && npm install && cd ../../frontends/shell && npm install && cd ../projects-app && npm install && cd ../ai-review-app && npm install",
+    "start:services:milestone": "concurrently -n auth,projects,gateway -c cyan,magenta,green \"cd services/auth-service && npm start\" \"cd services/projects-service && npm start\" \"wait-on tcp:4001 tcp:4002 && cd services/gateway && ENABLE_AIREVIEW_SUBGRAPH=false npm start\"",
     "start:services": "concurrently -n auth,projects,airev,gateway -c cyan,magenta,yellow,green \"cd services/auth-service && npm start\" \"cd services/projects-service && npm start\" \"cd services/ai-review-service && npm start\" \"wait-on tcp:4001 tcp:4002 tcp:4003 && cd services/gateway && npm start\"",
     "start:frontends": "concurrently -n projects,airev,shell -c magenta,yellow,green \"cd frontends/projects-app && npm run dev\" \"cd frontends/ai-review-app && npm run dev\" \"cd frontends/shell && npm run dev\"",
+    "start:milestone": "concurrently -n back,front -c blue,cyan \"npm run start:services:milestone\" \"npm run start:frontends\"",
     "start": "concurrently -n back,front -c blue,cyan \"npm run start:services\" \"npm run start:frontends\""
   },
   "devDependencies": {
