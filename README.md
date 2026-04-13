@@ -114,7 +114,6 @@ In milestone mode, gateway starts with `ENABLE_AIREVIEW_SUBGRAPH=false`.
 - AI Review app placeholder/remote integration: implemented
 - Frontend connected through gateway: implemented
 - README quality + organization: implemented (this file)
-- Demo video: see `Demo/lab3-demo-script.md`
 
 ## Known Notes
 
