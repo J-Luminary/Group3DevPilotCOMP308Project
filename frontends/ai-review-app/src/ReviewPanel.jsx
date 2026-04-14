@@ -27,8 +27,13 @@ const REVIEWS_FOR_DRAFT = gql`
 `;
 
 const GENERATE_REVIEW = gql`
-  mutation Gen($draftId: ID!, $draftContent: String!) {
-    generateReview(draftId: $draftId, draftContent: $draftContent) {
+  mutation Gen($draftId: ID!, $projectId: ID!, $featureId: ID!, $draftContent: String!) {
+    generateReview(
+      draftId: $draftId
+      projectId: $projectId
+      featureId: $featureId
+      draftContent: $draftContent
+    ) {
       id
     }
   }
@@ -113,8 +118,15 @@ export default function ReviewPanel({ projectId, featureId, draftId }) {
   if (!draft) return <div className="review-card review-empty">Draft not found.</div>;
 
   function runReview() {
-    generate({ variables: { draftId, draftContent: draft.content } });
-  }
+  generate({
+    variables: {
+      draftId,
+      projectId,
+      featureId,
+      draftContent: draft.content
+    }
+  });
+}
 
   const reviews = reviewsQ.data?.reviewsForDraft ?? [];
 
