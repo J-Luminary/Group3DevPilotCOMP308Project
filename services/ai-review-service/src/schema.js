@@ -12,9 +12,11 @@ export const typeDefs = gql`
     snippet: String!
   }
 
-  type Review {
+    type Review {
     id: ID!
     draftId: ID!
+    projectId: ID!
+    featureId: ID!
     summary: String!
     issues: [Issue!]!
     suggestions: [String!]!
@@ -29,6 +31,11 @@ export const typeDefs = gql`
   }
 
   extend type Mutation {
-    generateReview(draftId: ID!, draftContent: String!): Review!
+        generateReview(
+      draftId: ID!
+      projectId: ID!
+      featureId: ID!
+      draftContent: String!
+    ): Review!
   }
 `;
