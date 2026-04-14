@@ -9,10 +9,10 @@ Project Milestone: Micro Frontends, Gateway, GraphQL Subgraphs, and Session Auth
 
 | Member Name | User Story | What this story presents on the web page |
 |---|---|---|
-| Member 1 | As a logged-in developer, I want a single shell app that lets me move across Dashboard, Projects, AI Review, and Profile while loading remote apps seamlessly. | Sidebar navigation, route transitions, host + remote integration behavior, unified shell layout/theme. |
-| Member 2 | As a user, I want to register, log in, stay logged in after refresh, and log out securely using session-based authentication. | Register/Login forms, protected routes, persistent authenticated state after refresh, Logout flow. |
-| Member 3 | As a developer, I want to create projects, add feature requests, submit implementation drafts, and view/edit draft history for my work. | Project creation modal/form, feature add flow, project details page, draft list/history, and edit/delete/update actions. |
-| Member 4 | As the platform, I want all frontend requests to go through one GraphQL gateway that coordinates Auth and Projects services and shows AI Review remote integration. | Working end-to-end data flow via single app UI, project/draft data retrieval and mutations through gateway, AI Review page loaded and connected in app flow. |
+| Jordan Takacs | As a logged-in developer, I want a single shell app that lets me move across Dashboard, Projects, AI Review, and Profile while loading remote apps seamlessly. | Sidebar navigation, route transitions, host + remote integration behavior, unified shell layout/theme. |
+| Fatima Tuz Zahra | As a user, I want to register, log in, stay logged in after refresh, and log out securely using session-based authentication. | Register/Login forms, protected routes, persistent authenticated state after refresh, Logout flow. |
+| Atia Nahia | As a developer, I want to create projects, add feature requests, submit implementation drafts, and view/edit draft history for my work. | Project creation modal/form, feature add flow, project details page, draft list/history, and edit/delete/update actions. |
+| Nicolas Pavlenko | As the platform, I want all frontend requests to go through one GraphQL gateway that coordinates Auth and Projects services and shows AI Review remote integration. | Working end-to-end data flow via single app UI, project/draft data retrieval and mutations through gateway, AI Review page loaded and connected in app flow. |
 
 ## Architecture Overview
 
