@@ -13,7 +13,7 @@ export const resolvers = {
     }
   },
   Mutation: {
-    async generateReview(_, { draftId, draftContent }, { req }) {
+        async generateReview(_, { draftId, projectId, featureId, draftContent }, { req }) {
       requireAuth(req);
       if (!draftContent || draftContent.trim().length < 10) {
         throw new Error("draft too short to review");
@@ -21,6 +21,8 @@ export const resolvers = {
       const { review, reflection } = await runReview(draftContent);
       const saved = await Review.create({
         draftId,
+        projectId,
+        featureId,
         summary: review.summary,
         issues: review.issues,
         suggestions: review.suggestions,
