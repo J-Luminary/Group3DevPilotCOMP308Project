@@ -7,7 +7,7 @@ Prefer strong GraphQL types over String for structured data. A Money type with a
 Mark fields as non-null (!) only when the backend can guarantee them. An over-aggressive non-null schema will crash entire queries if one field returns null due to an unexpected edge case.
 
 ## Pagination
-Always paginate list fields that could grow unbounded. Cursor-based pagination (Relay-style connections) scales better than offset pagination for large datasets. For small finite lists (user's own projects), simple arrays are acceptable.
+Always paginate list fields that could grow unbounded. Relay-style connection pagination scales better than offset pagination for large datasets. For small finite lists (user's own projects), simple arrays are acceptable.
 
 ## Mutations
 Mutation names should be verbs: createProject, updateUser, deletePost. Mutations should return the affected object, not just a boolean. This lets clients update their cache without a refetch.
