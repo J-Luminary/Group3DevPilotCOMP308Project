@@ -7,8 +7,16 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@as-integrations/express5";
 import { ApolloGateway, IntrospectAndCompose, RemoteGraphQLDataSource } from "@apollo/gateway";
 
-const PORT = 4000;
+const PORT = Number(process.env.PORT || 4000);
 const includeAiReview = process.env.ENABLE_AIREVIEW_SUBGRAPH !== "false";
+const AUTH_SUBGRAPH_URL = process.env.AUTH_SUBGRAPH_URL || "http://localhost:4001/graphql";
+const PROJECTS_SUBGRAPH_URL = process.env.PROJECTS_SUBGRAPH_URL || "http://localhost:4002/graphql";
+const AIREVIEW_SUBGRAPH_URL = process.env.AIREVIEW_SUBGRAPH_URL || "http://localhost:4003/graphql";
+
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:3000,http://localhost:3001,http://localhost:3002")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 class SessionAwareDataSource extends RemoteGraphQLDataSource {
   willSendRequest({ request, context }) {
@@ -34,9 +42,9 @@ class SessionAwareDataSource extends RemoteGraphQLDataSource {
 const gateway = new ApolloGateway({
   supergraphSdl: new IntrospectAndCompose({
     subgraphs: [
-      { name: "auth", url: "http://localhost:4001/graphql" },
-      { name: "projects", url: "http://localhost:4002/graphql" },
-      ...(includeAiReview ? [{ name: "aireview", url: "http://localhost:4003/graphql" }] : [])
+      { name: "auth", url: AUTH_SUBGRAPH_URL },
+      { name: "projects", url: PROJECTS_SUBGRAPH_URL },
+      ...(includeAiReview ? [{ name: "aireview", url: AIREVIEW_SUBGRAPH_URL }] : [])
     ]
   }),
   buildService: ({ url }) => new SessionAwareDataSource({ url })
@@ -46,7 +54,7 @@ const server = new ApolloServer({ gateway });
 
 const app = express();
 app.use(cors({
-  origin: ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
+  origin: allowedOrigins,
   credentials: true
 }));
 app.use(express.json());

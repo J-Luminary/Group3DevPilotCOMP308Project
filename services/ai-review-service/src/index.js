@@ -12,8 +12,11 @@ import { typeDefs } from "./schema.js";
 import { resolvers } from "./resolvers.js";
 import { getStore } from "./rag/kb.js";
 
-const PORT = 4003;
+const PORT = Number(process.env.PORT || 4003);
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/devpilot";
+const isProduction = process.env.NODE_ENV === "production";
+const secureCookie = process.env.SESSION_COOKIE_SECURE ? process.env.SESSION_COOKIE_SECURE === "true" : isProduction;
+const sameSite = process.env.SESSION_COOKIE_SAMESITE || (secureCookie ? "none" : "lax");
 
 async function start() {
   await mongoose.connect(MONGO_URI);
@@ -22,6 +25,7 @@ async function start() {
   getStore().catch((e) => console.error("[ai-review] kb warm-up failed", e.message));
 
   const app = express();
+  app.set("trust proxy", 1);
   app.use(express.json({ limit: "1mb" }));
 
   app.use(session({
@@ -32,8 +36,8 @@ async function start() {
     store: MongoStore.create({ mongoUrl: MONGO_URI, collectionName: "sessions" }),
     cookie: {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: secureCookie,
+      sameSite,
       maxAge: 1000 * 60 * 60 * 24 * 7
     }
   }));

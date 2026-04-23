@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatGroq } from "@langchain/groq";
+import { ChatCohere } from "@langchain/cohere";
 import { StateGraph, Annotation, END, START } from "@langchain/langgraph";
 import { retrieve } from "./kb.js";
 
@@ -29,6 +30,8 @@ const reflectionSchema = z.object({
 const MODEL_CHAIN = [
   { provider: "groq", name: "llama-3.3-70b-versatile" },
   { provider: "groq", name: "llama-3.1-8b-instant" },
+  { provider: "cohere", name: "command-r-plus" },
+  { provider: "cohere", name: "command-r" },
   { provider: "google", name: "gemini-2.5-flash" },
   { provider: "google", name: "gemini-2.5-flash-lite" },
   { provider: "google", name: "gemini-2.0-flash" }
@@ -39,6 +42,14 @@ function makeModel(entry) {
     if (!process.env.GROQ_API_KEY) return null;
     return new ChatGroq({
       apiKey: process.env.GROQ_API_KEY,
+      model: entry.name,
+      temperature: 0.2
+    });
+  }
+  if (entry.provider === "cohere") {
+    if (!process.env.COHERE_API_KEY) return null;
+    return new ChatCohere({
+      apiKey: process.env.COHERE_API_KEY,
       model: entry.name,
       temperature: 0.2
     });

@@ -109,6 +109,52 @@ In milestone mode, gateway starts with `ENABLE_AIREVIEW_SUBGRAPH=false`.
 - Projects subgraph: `http://localhost:4002/graphql`
 - AI Review subgraph: `http://localhost:4003/graphql` (full mode only)
 
+## Deployment Notes (Bonus Marks)
+
+This repo is now configured so frontend and backend URLs can be environment-driven.
+
+### Recommended Production Layout
+
+- Deploy frontends (`shell`, `projects-app`, `ai-review-app`) to Vercel.
+- Deploy backend services (`gateway`, `auth-service`, `projects-service`, `ai-review-service`) to a Node host such as Render/Railway/Azure/AWS.
+- Use MongoDB Atlas for production database and session store.
+
+### Vercel Projects
+
+Create 3 separate Vercel projects using these roots:
+
+- `frontends/projects-app`
+- `frontends/ai-review-app`
+- `frontends/shell`
+
+For `shell`, set these environment variables in Vercel:
+
+```env
+VITE_GRAPHQL_URL=https://<your-gateway-domain>/graphql
+VITE_PROJECTS_REMOTE_ENTRY=https://<your-projects-app-domain>/remoteEntry.js
+VITE_AIREVIEW_REMOTE_ENTRY=https://<your-ai-review-app-domain>/remoteEntry.js
+```
+
+### Backend Environment Variables
+
+Set in backend host (gateway/services):
+
+```env
+MONGO_URI=<mongodb-atlas-uri>
+SESSION_SECRET=<strong-random-secret>
+SESSION_COOKIE_SECURE=true
+SESSION_COOKIE_SAMESITE=none
+CORS_ORIGINS=https://<your-shell-domain>
+AUTH_SUBGRAPH_URL=https://<your-auth-domain>/graphql
+PROJECTS_SUBGRAPH_URL=https://<your-projects-service-domain>/graphql
+AIREVIEW_SUBGRAPH_URL=https://<your-ai-review-service-domain>/graphql
+GEMINI_API_KEY=<key>
+GROQ_API_KEY=<key>
+COHERE_API_KEY=<key>
+```
+
+> Keep `ENABLE_AIREVIEW_SUBGRAPH` enabled in production so final-project requirements are fully met.
+
 ## Lab 3 Requirement Mapping
 
 - Shell + 2 remotes integrated: implemented
@@ -121,6 +167,6 @@ In milestone mode, gateway starts with `ENABLE_AIREVIEW_SUBGRAPH=false`.
 
 ## Known Notes
 
-- Full AI review quality depends on valid `GEMINI_API_KEY` and `GROQ_API_KEY`.
+- Full AI review quality depends on at least one LLM key (`GROQ_API_KEY` and/or `GEMINI_API_KEY`) and embeddings (`COHERE_API_KEY` and/or `GEMINI_API_KEY`). See `services/ai-review-service/.env.example`.
 - Lab milestone mode exists to align with Week 10 scope where AI backend is not required.
 
