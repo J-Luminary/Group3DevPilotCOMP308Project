@@ -1,15 +1,24 @@
 # .env TEMPLATE for DevPilot
 #
 # This is NOT the real .env file. It shows the shape of what you need.
-# Get the actual values from Jordan in our team chat, then:
+ then:
 #   1. Create a new file at the PROJECT ROOT called exactly ".env" (not .env.txt)
-#   2. Paste the real values Jordan sends
+#   2. Paste the real values 
 #   3. Save the file
 #
 # Project root = the folder that contains package.json, services/, frontends/
 # NOT this Quickstart folder.
 
 MONGO_URI=mongodb://localhost:27017/devpilot
-SESSION_SECRET=ask-jordan-for-the-real-value
-GEMINI_API_KEY=ask-jordan-for-the-real-value
-GROQ_API_KEY=ask-jordan-for-the-real-value
+SESSION_SECRET=change-me-for-production
+GEMINI_API_KEY=your-gemini-key-here
+GOOGLE_API_KEY=your-google-key-here
+GROQ_API_KEY=your-groq-key-here
+COHERE_API_KEY=your-cohere-key-here
+SESSION_COOKIE_SECURE=false
+SESSION_COOKIE_SAMESITE=lax
+CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:3002
+AUTH_SUBGRAPH_URL=http://localhost:4001/graphql
+PROJECTS_SUBGRAPH_URL=http://localhost:4002/graphql
+AIREVIEW_SUBGRAPH_URL=http://localhost:4003/graphql
+

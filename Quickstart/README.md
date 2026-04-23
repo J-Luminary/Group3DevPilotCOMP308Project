@@ -26,7 +26,7 @@ Everything else (Node.js, Git, MongoDB) gets installed by the setup script.
    - Extract the ZIP anywhere you like (e.g. `C:\DevPilot\Group3DevPilotCOMP308Project`)
 
 2. **Get the .env file**
-   - Ask Jordan for the `.env` file contents in our team chat
+   
    - Open the extracted project folder in File Explorer
    - Create a new file at the root called exactly `.env` (no extension, starts with a dot)
    - Paste the contents Jordan sends you and save

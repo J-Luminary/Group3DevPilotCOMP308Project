@@ -80,7 +80,7 @@ export const resolvers = {
       req.session.userId = user.id;
       return { user, message: "password reset successful" };
     },
-    async updateProfile(_, { username, email, fullName, about }, { req }) {
+    async updateProfile(_, { username, email, fullName, about, title, company, location, website, github, phone }, { req }) {
       if (!req.session?.userId) throw new Error("not authenticated");
       if (!username?.trim() || !email?.trim()) throw new Error("username and email are required");
 
@@ -97,6 +97,12 @@ export const resolvers = {
       user.email = email.trim();
       user.fullName = (fullName || "").trim();
       user.about = (about || "").trim();
+      user.title = (title || "").trim();
+      user.company = (company || "").trim();
+      user.location = (location || "").trim();
+      user.website = (website || "").trim();
+      user.github = (github || "").trim();
+      user.phone = (phone || "").trim();
       await user.save();
 
       return { user, message: "profile updated" };

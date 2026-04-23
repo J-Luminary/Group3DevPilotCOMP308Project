@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, Link, NavLink, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import Login from "./pages/Login.jsx";
@@ -11,7 +11,22 @@ import Profile from "./pages/Profile.jsx";
 import AiReviewHome from "./pages/AiReviewHome.jsx";
 
 const CURRENT_USER = gql`
-  query Me { currentUser { id username email fullName about role } }
+  query Me {
+    currentUser {
+      id
+      username
+      email
+      fullName
+      about
+      title
+      company
+      location
+      website
+      github
+      phone
+      role
+    }
+  }
 `;
 
 const LOGOUT = gql`
@@ -40,6 +55,7 @@ function pageTheme(pathname) {
 
 function ShellChrome({ user, refetch, projects }) {
   const nav = useNavigate();
+  const [showProjectNav, setShowProjectNav] = useState(true);
   const [logout] = useMutation(LOGOUT, {
     onCompleted: async () => {
       await refetch();
@@ -76,26 +92,63 @@ function ShellChrome({ user, refetch, projects }) {
               </NavLink>
             </nav>
 
+            <details className="sidebar-dropdown" open>
+              <summary>Quick Actions</summary>
+              <div className="sidebar-dropdown-body">
+                <Link to="/" className="sidebar-mini-link">Open Dashboard</Link>
+                <Link to="/ai-review" className="sidebar-mini-link">Start AI Review Flow</Link>
+                <Link to="/profile" className="sidebar-mini-link">Edit Profile</Link>
+              </div>
+            </details>
+
             <div className="sidebar-projects">
-              <h6>Project Navigator</h6>
-              {projects.length === 0 ? (
-                <div className="project-nav-empty">No projects yet.</div>
-              ) : (
-                projects.map((p) => (
-                  <details key={p.id} className="project-nav-item">
-                    <summary>
-                      <span className="nav-emoji">📁</span>
-                      <span>{p.name}</span>
-                    </summary>
-                    <ol>
-                      {(p.features || []).map((f) => (
-                        <li key={f.id}>{f.title}</li>
-                      ))}
-                      {(p.features || []).length === 0 && <li className="project-nav-empty">No features yet.</li>}
-                    </ol>
-                    <Link className="project-nav-open" to={`/projects/${p.id}`}>Open project</Link>
-                  </details>
-                ))
+              <div className="sidebar-projects-head">
+                <h6>Project Navigator</h6>
+                <button
+                  type="button"
+                  className="sidebar-collapse-btn"
+                  onClick={() => setShowProjectNav((v) => !v)}
+                >
+                  {showProjectNav ? "Hide" : "Show"}
+                </button>
+              </div>
+              {showProjectNav && (
+                <>
+                  {projects.length === 0 ? (
+                    <div className="project-nav-empty">No projects yet.</div>
+                  ) : (
+                    projects.map((p) => (
+                      <details key={p.id} className="project-nav-item">
+                        <summary>
+                          <div className="project-nav-summary-main">
+                            <span className="nav-emoji">📁</span>
+                            <div className="project-nav-summary-text">
+                              <span className="project-nav-title">{p.name}</span>
+                              <small>Project workspace</small>
+                            </div>
+                          </div>
+                          <span className="project-nav-count">{(p.features || []).length}</span>
+                        </summary>
+                        <div className="project-nav-content">
+                          <div className="project-nav-section-label">Features</div>
+                          {(p.features || []).length === 0 ? (
+                            <div className="project-nav-empty">No features yet.</div>
+                          ) : (
+                            <div className="project-feature-list">
+                              {(p.features || []).map((f) => (
+                                <span key={f.id} className="project-feature-pill">{f.title}</span>
+                              ))}
+                            </div>
+                          )}
+                          <div className="project-nav-actions">
+                            <Link className="project-nav-open" to={`/projects/${p.id}`}>Open project</Link>
+                            <Link className="project-nav-open muted" to="/ai-review">Review flow</Link>
+                          </div>
+                        </div>
+                      </details>
+                    ))
+                  )}
+                </>
               )}
             </div>
           </>

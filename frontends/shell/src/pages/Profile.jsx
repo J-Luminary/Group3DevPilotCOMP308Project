@@ -4,10 +4,45 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 
 const UPDATE_PROFILE = gql`
-  mutation UpdateProfile($username: String!, $email: String!, $fullName: String, $about: String) {
-    updateProfile(username: $username, email: $email, fullName: $fullName, about: $about) {
+  mutation UpdateProfile(
+    $username: String!
+    $email: String!
+    $fullName: String
+    $about: String
+    $title: String
+    $company: String
+    $location: String
+    $website: String
+    $github: String
+    $phone: String
+  ) {
+    updateProfile(
+      username: $username
+      email: $email
+      fullName: $fullName
+      about: $about
+      title: $title
+      company: $company
+      location: $location
+      website: $website
+      github: $github
+      phone: $phone
+    ) {
       message
-      user { id username email fullName about role }
+      user {
+        id
+        username
+        email
+        fullName
+        about
+        title
+        company
+        location
+        website
+        github
+        phone
+        role
+      }
     }
   }
 `;
@@ -32,7 +67,13 @@ export default function Profile({ user, onAuth }) {
     username: u?.username || "",
     email: u?.email || "",
     fullName: u?.fullName || "",
-    about: u?.about || ""
+    about: u?.about || "",
+    title: u?.title || "",
+    company: u?.company || "",
+    location: u?.location || "",
+    website: u?.website || "",
+    github: u?.github || "",
+    phone: u?.phone || ""
   }), []);
   const [baseline, setBaseline] = useState(toProfileForm(user));
   const [form, setForm] = useState(toProfileForm(user));
@@ -52,7 +93,13 @@ export default function Profile({ user, onAuth }) {
     form.username !== baseline.username ||
     form.email !== baseline.email ||
     form.fullName !== baseline.fullName ||
-    form.about !== baseline.about;
+    form.about !== baseline.about ||
+    form.title !== baseline.title ||
+    form.company !== baseline.company ||
+    form.location !== baseline.location ||
+    form.website !== baseline.website ||
+    form.github !== baseline.github ||
+    form.phone !== baseline.phone;
 
   const [updateProfile, updateState] = useMutation(UPDATE_PROFILE, {
     onCompleted: async (data) => {
@@ -122,48 +169,74 @@ export default function Profile({ user, onAuth }) {
         <p>Edit your account details, update password, or delete your account.</p>
       </div>
 
-      <Form onSubmit={submitProfile} className="card-box profile-card">
-        <h5>Account information</h5>
-        <Form.Group className="mb-3">
-          <Form.Label>Full name</Form.Label>
-          <Form.Control value={form.fullName} onChange={(e) => updateField("fullName", e.target.value)} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Username</Form.Label>
-          <Form.Control required value={form.username} onChange={(e) => updateField("username", e.target.value)} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Email</Form.Label>
-          <Form.Control required type="email" value={form.email} onChange={(e) => updateField("email", e.target.value)} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>About</Form.Label>
-          <Form.Control as="textarea" rows={3} value={form.about} onChange={(e) => updateField("about", e.target.value)} />
-        </Form.Group>
-        <div className="profile-row">
-          <span className="profile-label">Role</span>
-          <span className="profile-role">{user.role}</span>
-        </div>
-        {hasUnsavedChanges && <div className="profile-unsaved-msg">You have unsaved changes.</div>}
-        <Button className="auth-submit-btn profile-save-btn" type="submit" disabled={updateState.loading || !hasUnsavedChanges}>
-          {updateState.loading ? "Saving..." : "Save profile"}
-        </Button>
-      </Form>
+      <div className="profile-grid">
+        <Form onSubmit={submitProfile} className="card-box profile-card profile-card-main">
+          <h5>Account information</h5>
+          <Form.Group className="mb-3">
+            <Form.Label>Full name</Form.Label>
+            <Form.Control value={form.fullName} onChange={(e) => updateField("fullName", e.target.value)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Username</Form.Label>
+            <Form.Control required value={form.username} onChange={(e) => updateField("username", e.target.value)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control required type="email" value={form.email} onChange={(e) => updateField("email", e.target.value)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>About</Form.Label>
+            <Form.Control as="textarea" rows={3} value={form.about} onChange={(e) => updateField("about", e.target.value)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Job title</Form.Label>
+            <Form.Control value={form.title} onChange={(e) => updateField("title", e.target.value)} placeholder="e.g., Full Stack Developer" />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Company</Form.Label>
+            <Form.Control value={form.company} onChange={(e) => updateField("company", e.target.value)} placeholder="e.g., DevPilot Labs" />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Location</Form.Label>
+            <Form.Control value={form.location} onChange={(e) => updateField("location", e.target.value)} placeholder="e.g., Toronto, ON" />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Website</Form.Label>
+            <Form.Control value={form.website} onChange={(e) => updateField("website", e.target.value)} placeholder="https://your-website.com" />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>GitHub</Form.Label>
+            <Form.Control value={form.github} onChange={(e) => updateField("github", e.target.value)} placeholder="github.com/username" />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Phone</Form.Label>
+            <Form.Control value={form.phone} onChange={(e) => updateField("phone", e.target.value)} placeholder="+1 (___) ___-____" />
+          </Form.Group>
+          <div className="profile-row">
+            <span className="profile-label">Role</span>
+            <span className="profile-role">{user.role}</span>
+          </div>
+          {hasUnsavedChanges && <div className="profile-unsaved-msg">You have unsaved changes.</div>}
+          <Button className="auth-submit-btn profile-save-btn" type="submit" disabled={updateState.loading || !hasUnsavedChanges}>
+            {updateState.loading ? "Saving..." : "Save profile"}
+          </Button>
+        </Form>
 
-      <Form onSubmit={submitPassword} className="card-box profile-card">
-        <h5>Change password</h5>
-        <Form.Group className="mb-3">
-          <Form.Label>Current password</Form.Label>
-          <Form.Control type="password" required value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>New password</Form.Label>
-          <Form.Control type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-        </Form.Group>
-        <Button className="auth-submit-btn profile-save-btn" type="submit" disabled={changeState.loading}>
-          {changeState.loading ? "Updating..." : "Update password"}
-        </Button>
-      </Form>
+        <Form onSubmit={submitPassword} className="card-box profile-card profile-card-side">
+          <h5>Change password</h5>
+          <Form.Group className="mb-3">
+            <Form.Label>Current password</Form.Label>
+            <Form.Control type="password" required value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>New password</Form.Label>
+            <Form.Control type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+          </Form.Group>
+          <Button className="auth-submit-btn profile-save-btn" type="submit" disabled={changeState.loading}>
+            {changeState.loading ? "Updating..." : "Update password"}
+          </Button>
+        </Form>
+      </div>
 
       <Form onSubmit={submitDelete} className="card-box profile-card danger-card">
         <h5>Delete account</h5>

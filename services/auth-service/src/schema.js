@@ -7,6 +7,12 @@ export const typeDefs = gql`
     email: String!
     fullName: String
     about: String
+    title: String
+    company: String
+    location: String
+    website: String
+    github: String
+    phone: String
     role: String!
   }
 
@@ -31,7 +37,18 @@ export const typeDefs = gql`
     logout: Boolean!
     requestPasswordReset(email: String!): PasswordResetRequestPayload!
     resetPassword(token: String!, newPassword: String!): AuthPayload!
-    updateProfile(username: String!, email: String!, fullName: String, about: String): AuthPayload!
+    updateProfile(
+      username: String!
+      email: String!
+      fullName: String
+      about: String
+      title: String
+      company: String
+      location: String
+      website: String
+      github: String
+      phone: String
+    ): AuthPayload!
     changePassword(currentPassword: String!, newPassword: String!): AuthPayload!
     deleteAccount(currentPassword: String!): Boolean!
   }
